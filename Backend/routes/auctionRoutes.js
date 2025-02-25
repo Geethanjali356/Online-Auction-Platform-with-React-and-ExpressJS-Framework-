@@ -8,3 +8,8 @@ const router = express.Router();
 router.delete('/:id', authMiddleware, deleteAuction);
 
 module.exports = router;
+
+const { editAuction } = require('../controllers/auctionController');
+
+// PUT to edit auction details
+router.put('/:id', authMiddleware, editAuction);
