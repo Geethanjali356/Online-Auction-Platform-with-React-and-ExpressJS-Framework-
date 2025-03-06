@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Dashboard() {
   const [items, setItems] = useState([]);
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      nav('/signin'); // Redirect to signin if not authenticated
+      navigate('/signin');
       return;
     }
 
@@ -18,35 +19,21 @@ function Dashboard() {
         const res = await axios.get('http://localhost:5001/auctions');
         setItems(res.data);
       } catch (error) {
-        console.error('Error fetching auctions:', error);
+        toast.error('Error fetching auctions');
       }
     };
     fetchItems();
-  }, []);
-
-  // 🔹 Handle Logout
-  // const handleLogout = () => {
-  //   localStorage.removeItem('authToken'); // Remove token
-  //   navigate('/signin'); // Redirect to Sign In page
-  // };
+  }, [navigate]);
 
   return (
-    <div>
-      <h2>Auction Dashboard</h2>
-      <h1> Bla bla bla </h1>
-
-      {/* 🔹 Logout Button 
-      <button onClick={handleLogout} style={{ marginLeft: '10px', background: 'red', color: 'white' }}>
-        Logout
-      </button>*/}
-
+    <div className="dashboard-container">
+      <h2 className="dashboard-title">Auction Dashboard</h2>
       <Link to="/post-auction">
-        <button>Post New Auction</button>
+        <button className="post-auction-btn">Post New Auction</button>
       </Link>
-
-      <ul>
+      <ul className="auction-list">
         {items.map((item) => (
-          <li key={item._id}>
+          <li key={item._id} className="auction-item">
             <Link to={`/auction/${item._id}`}>
               {item.itemName} - Current Bid: ${item.currentBid} {item.isClosed ? '(Closed)' : ''}
             </Link>
